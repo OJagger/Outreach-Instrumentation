@@ -11,7 +11,7 @@ from hx711 import HX711
 import math
 
 def cal_pressure(pRaw):
-    return 1000*(pCal[0] + pRaw*(vCal[1]-vCal[0])/(pCal[1]-pCal[0]))
+    return 1000*(pCal[0] + (pRaw-vCal[0])*(pCal[1]-pCal[0])/(vCal[1]-vCal[0]))
 
 def cal_temperature(tRaw):
     return (-tRaw+1.95)*200/1.65 - 50
