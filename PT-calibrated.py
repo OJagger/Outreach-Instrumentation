@@ -11,7 +11,8 @@ from hx711 import HX711
 import math
 
 def cal_pressure(pRaw):
-    return 1000*(pCal[0] + (pRaw-vCal[0])*(pCal[1]-pCal[0])/(vCal[1]-vCal[0]))
+    #return 1000*(pCal[0] + (pRaw-vCal[0])*(pCal[1]-pCal[0])/(vCal[1]-vCal[0]))
+    return 1000*((pRaw-vCal[0])*(pCal[1]-pCal[0])/(vCal[1]-vCal[0]))
 
 def cal_temperature(tRaw):
     return (-tRaw+1.95)*200/1.65 - 50
@@ -69,6 +70,14 @@ Fln, = Fax.plot(x,Fraw,'b')
 
 print(type(Pln))
 
+p_tare_list = []
+
+for i in range(20):
+    p_tare_list.append(p_chan.voltage)
+    time.sleep(0.05)
+
+p_tare = sum(p_tare_list)/len(p_tare_list)
+
 INTERVAL = 0.1
 now = time.time()
 next = now+INTERVAL
@@ -77,7 +86,7 @@ while True:
     if now >= next:
         next = next+INTERVAL
         #x.append(i)
-        Praw.append(cal_pressure(p_chan.voltage))
+        Praw.append(cal_pressure(p_chan.voltage)-p_tare)
         Traw.append(cal_temperature(t_chan.voltage))
         Fraw.append(cal_force(hx.get_weight(1)))
 
